@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Simulação de Urna Eletrônica</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #d9d9d9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .urna {
+            width: 850px;
+            max-width: 100%;
+            background-color: #222;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .titulo {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .urna-conteudo {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 25px;
+        }
+
+        /* TELA */
+        .tela {
+            background-color: #e7e7d8;
+            min-height: 420px;
+            border: 15px solid #444;
+            padding: 30px;
+            color: #111;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .cabecalho-tela {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+            font-size: 20px;
+        }
+
+        .cargo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .numero {
+            font-size: 38px;
+            letter-spacing: 10px;
+            margin-bottom: 25px;
+            min-height: 45px;
+        }
+
+        .dados-candidato {
+            font-size: 19px;
+            line-height: 1.8;
+        }
+
+        .mensagem {
+            margin-top: 25px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* TECLADO */
+        .teclado {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .teclado h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .botoes-numericos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .numero-btn {
+            background-color: #111;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 18px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #000;
+        }
+
+        .numero-btn:hover {
+            background-color: #444;
+        }
+
+        .numero-btn:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
+        .acoes {
+            display: grid;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .acao {
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .branco {
+            background-color: white;
+            color: black;
+        }
+
+        .corrige {
+            background-color: #facc15;
+            color: black;
+        }
+
+        .confirma {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .candidato-info {
+            background-color: #f3f3f3;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 7px;
+        }
+
+        .candidato-info h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .candidato {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 750px) {
+            .urna-conteudo {
+                grid-template-columns: 1fr;
+            }
+
+            .tela {
+                min-height: 350px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="urna">
+
+        <h1 class="titulo">🗳️ SIMULAÇÃO DE URNA ELETRÔNICA</h1>
+
+        <div class="urna-conteudo">
+
+            <!-- TELA DA URNA -->
+            <div class="tela">
+
+                <div class="cabecalho-tela">
+                    ELEIÇÕES 2026 — SIMULAÇÃO
+                </div>
+
+                <div id="cargo" class="cargo">
+                    PRESIDENTE
+                </div>
+
+                <div id="numero" class="numero">
+                    __
+                </div>
+
+                <div id="dadosCandidato" class="dados-candidato">
+                    Digite o número do candidato.
+                </div>
+
+                <div id="mensagem" class="mensagem">
+                    Escolha um candidato utilizando o teclado.
+                </div>
+
+            </div>
+
+
+            <!-- TECLADO -->
+            <div class="teclado">
+
+                <h2>TECLADO NUMÉRICO</h2>
+
+                <div class="botoes-numericos">
+
+                    <button class="numero-btn" onclick="digitar(1)">1</button>
+                    <button class="numero-btn" onclick="digitar(2)">2</button>
+                    <button class="numero-btn" onclick="digitar(3)">3</button>
+
+                    <button class="numero-btn" onclick="digitar(4)">4</button>
+                    <button class="numero-btn" onclick="digitar(5)">5</button>
+                    <button class="numero-btn" onclick="digitar(6)">6</button>
+
+                    <button class="numero-btn" onclick="digitar(7)">7</button>
+                    <button class="numero-btn" onclick="digitar(8)">8</button>
+                    <button class="numero-btn" onclick="digitar(9)">9</button>
+
+                    <button class="numero-btn"></button>
+                    <button class="numero-btn" onclick="digitar(0)">0</button>
+                    <button class="numero-btn"></button>
+
+                </div>
+
+
+                <div class="acoes">
+
+                    <button
+                        class="acao branco"
+                        onclick="votoBranco()">
+                        BRANCO
+                    </button>
+
+                    <button
+                        class="acao corrige"
+                        onclick="corrigir()">
+                        CORRIGE
+                    </button>
+
+                    <button
+                        class="acao confirma"
+                        onclick="confirmar()">
+                        CONFIRMA
+                    </button>
+
+                </div>
+
+
+                <!-- LISTA DE CANDIDATOS -->
+                <div class="candidato-info">
+
+                    <h3>Candidatos da simulação</h3>
+
+                    <p class="candidato">
+                        <strong>Presidente</strong>
+                    </p>
+
+                    <p class="candidato">
+                        10 — Ana Silva
+                    </p>
+
+                    <p class="candidato">
+                        20 — Carlos Souza
+                    </p>
+
+                    <p class="candidato">
+                        30 — João Oliveira
+                    </p>
+
+                    <br>
+
+                    <p class="candidato">
+                        <strong>Governador</strong>
+                    </p>
+
+                    <p class="candidato">
+                        11 — Maria Santos
+                    </p>
+
+                    <p class="candidato">
+                        22 — Pedro Lima
+                    </p>
+
+                    <p class="candidato">
+                        33 — Lucas Ferreira
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // CANDIDATOS FICTÍCIOS
+        const candidatos = {
+
+            presidente: {
+
+                "10": "Ana Silva",
+                "20": "Carlos Souza",
+                "30": "João Oliveira"
+
+            },
+
+            governador: {
+
+                "11": "Maria Santos",
+                "22": "Pedro Lima",
+                "33": "Lucas Ferreira"
+
+            }
+
+        };
+
+
+        // ESTADO DA URNA
+        let cargoAtual = "presidente";
+
+        let numeroDigitado = "";
+
+        let etapa = "presidente";
+
+
+        // ELEMENTOS DA TELA
+        const cargo =
+            document.getElementById("cargo");
+
+        const numero =
+            document.getElementById("numero");
+
+        const dadosCandidato =
+            document.getElementById("dadosCandidato");
+
+        const mensagem =
+            document.getElementById("mensagem");
+
+
+        // DIGITAR NÚMERO
+        function digitar(numeroTecla) {
+
+            if (numeroDigitado.length >= 2) {
+                return;
+            }
+
+            numeroDigitado += numeroTecla;
+
+            atualizarTela();
+
+            verificarCandidato();
+        }
+
+
+        // ATUALIZAR NÚMERO NA TELA
+        function atualizarTela() {
+
+            if (numeroDigitado === "") {
+
+                numero.textContent = "__";
+
+            } else {
+
+                numero.textContent =
+                    numeroDigitado.padEnd(2, "_");
+
+            }
+
+        }
+
+
+        // VERIFICAR CANDIDATO
+        function verificarCandidato() {
+
+            const lista =
+                candidatos[cargoAtual];
+
+            const candidato =
+                lista[numeroDigitado];
+
+            if (candidato) {
+
+                dadosCandidato.innerHTML = `
+                    <strong>Candidato:</strong> ${candidato}
+                    <br>
+                    <strong>Número:</strong> ${numeroDigitado}
+                `;
+
+                mensagem.textContent =
+                    "Confira os dados e clique em CONFIRMA.";
+
+            } else if (numeroDigitado.length === 2) {
+
+                dadosCandidato.innerHTML =
+                    "Candidato não encontrado.";
+
+                mensagem.textContent =
+                    "Digite um número válido.";
+
+            }
+
+        }
+
+
+        // CONFIRMAR VOTO
+        function confirmar() {
+
+            const lista =
+                candidatos[cargoAtual];
+
+            const candidato =
+                lista[numeroDigitado];
+
+            if (!candidato) {
+
+                mensagem.textContent =
+                    "Selecione um candidato válido antes de confirmar.";
+
+                return;
+            }
+
+
+            // MENSAGEM OBRIGATÓRIA
+            dadosCandidato.innerHTML = `
+                <strong>Você votou em:</strong>
+                <br><br>
+                ${candidato}
+            `;
+
+            mensagem.textContent =
+                "Voto confirmado com sucesso!";
+
+
+            // PASSA PARA O PRÓXIMO CARGO
+            setTimeout(() => {
+
+                if (etapa === "presidente") {
+
+                    etapa = "governador";
+
+                    cargoAtual = "governador";
+
+                    numeroDigitado = "";
+
+                    cargo.textContent = "GOVERNADOR";
+
+                    numero.textContent = "__";
+
+                    dadosCandidato.textContent =
+                        "Digite o número do candidato.";
+
+                    mensagem.textContent =
+                        "Agora escolha seu candidato para Governador.";
+
+                } else {
+
+                    cargo.textContent =
+                        "VOTAÇÃO FINALIZADA";
+
+                    numero.textContent = "";
+
+                    dadosCandidato.innerHTML =
+                        "<strong>Obrigado por participar da simulação!</strong>";
+
+                    mensagem.textContent =
+                        "Todos os votos foram registrados.";
+
+                }
+
+            }, 2500);
+
+        }
+
+
+        // CORRIGIR
+        function corrigir() {
+
+            numeroDigitado = "";
+
+            atualizarTela();
+
+            dadosCandidato.textContent =
+                "Digite o número do candidato.";
+
+            mensagem.textContent =
+                "Número apagado. Escolha novamente.";
+
+        }
+
+
+        // VOTO EM BRANCO
+        function votoBranco() {
+
+            dadosCandidato.innerHTML =
+                "<strong>VOTO EM BRANCO</strong>";
+
+            mensagem.textContent =
+                "Clique em CONFIRMA para registrar.";
+
+            numeroDigitado = "";
+
+            numero.textContent = "__";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
